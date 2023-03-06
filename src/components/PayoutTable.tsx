@@ -12,20 +12,19 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 
 function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-    price: number,
+  account_id: number,
+  account_name: string,
+  account_type: 'individual' | 'business',
+  total_lifetime: number,
+  total_ytd: number,
+
   ) {
     return {
-      name,
-      calories,
-      fat,
-      carbs,
-      protein,
-      price,
+      account_id,
+      account_name,
+      account_type,
+      total_lifetime,
+      total_ytd,
       history: [
         {
           date: '2020-01-05',
@@ -47,23 +46,25 @@ function createData(
   
     return (
       <React.Fragment>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} className='table-row'>
           <TableCell>
             <IconButton
               aria-label="expand row"
               size="small"
               onClick={() => setOpen(!open)}
             >
-              {open ? '^' : 'v'}
+              {open ? '^' : '+'}
             </IconButton>
           </TableCell>
-          <TableCell component="th" scope="row">
-            {row.name}
+          <TableCell component="th" scope="row" className='table-cell'>
+            {row.account_id}
           </TableCell>
-          <TableCell align="right">{row.calories}</TableCell>
-          <TableCell align="right">{row.fat}</TableCell>
-          <TableCell align="right">{row.carbs}</TableCell>
-          <TableCell align="right">{row.protein}</TableCell>
+          <TableCell component="th" scope="row" align='right' className='table-cell'>
+            {row.account_name}
+          </TableCell>
+          <TableCell className='table-cell'>{row.account_type}</TableCell>
+          <TableCell className='table-cell'>{row.total_lifetime}</TableCell>
+          <TableCell className='table-cell'>{row.total_ytd}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -77,8 +78,8 @@ function createData(
                     <TableRow>
                       <TableCell>Date</TableCell>
                       <TableCell>Customer</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Total price ($)</TableCell>
+                      <TableCell>Amount</TableCell>
+                      <TableCell>Total price ($)</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -88,9 +89,9 @@ function createData(
                           {historyRow.date}
                         </TableCell>
                         <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell align="right">{historyRow.amount}</TableCell>
-                        <TableCell align="right">
-                          {Math.round(historyRow.amount * row.price * 100) / 100}
+                        <TableCell>{historyRow.amount}</TableCell>
+                        <TableCell>
+                          {Math.round(historyRow.amount * row.total_ytd * 100) / 100}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -105,29 +106,25 @@ function createData(
   }
   
   const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-    createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+    createData(32, "Mykael Barnes", 'business', 100, 100)
   ];
   
   export default function CollapsibleTable() {
     return (
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Account Name</TableCell>
-              <TableCell align="right">Type</TableCell>
-              <TableCell align="right">Total Lifetime</TableCell>
-              <TableCell align="right"></TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
+      <TableContainer className="table-container">
+        <Table aria-label="collapsible table" className='table'>
+          <TableHead className='table-head'>
+            <TableRow className='table-row'>
+              {/* <TableCell /> */}
+              <TableCell className='table-cell'>Account ID</TableCell>
+              <TableCell className='table-cell'>Account Name</TableCell>
+              <TableCell className='table-cell'>Type</TableCell>
+              <TableCell className='table-cell'>Total_Lifetime</TableCell>
+              <TableCell className='table-cell'>Total_YtD</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-              <Row key={rows[0].name} row={rows[0]} />
+              <Row key={rows[0].account_name} row={rows[0]} />
           </TableBody>
         </Table>
       </TableContainer>
