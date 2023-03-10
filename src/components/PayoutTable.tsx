@@ -12,9 +12,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 
 function createData(
-  account_id: number,
+  account_id: string,
   account_name: string,
-  account_type: 'individual' | 'business',
+  account_type: 'Individual' | 'Business',
   total_lifetime: number,
   total_ytd: number,
 
@@ -28,13 +28,33 @@ function createData(
       history: [
         {
           date: '2020-01-05',
-          customerId: '11091700',
-          amount: 3,
+          status: 'Pending',
+          event_id: '123abc',
+          amount: 300.00.toFixed(2),
+          initator: 'Mykael',
+          invoice_url: "http://localhost:3000",
+          line_items: [
+            {
+            item_name: 'item_name_1',
+            item_rate: 'item_rate_1',
+            item_quantity: 'item_quantity_1'
+            }
+          ]
         },
         {
           date: '2020-01-02',
-          customerId: 'Anonymous',
-          amount: 1,
+          status: 'Pending',
+          event_id: '123abc',
+          amount: 100.00.toFixed(2),
+          initator: 'Mykael',
+          invoice_url: "http://localhost:3000",
+          line_items: [
+            {
+            item_name: 'item_name_2',
+            item_rate: 'item_rate_2',
+            item_quantity: 'item_quantity_2'
+            }
+          ]
         },
       ],
     };
@@ -42,7 +62,8 @@ function createData(
   
   function Row(props: { row: ReturnType<typeof createData> }) {
     const { row } = props;
-    const [open, setOpen] = React.useState(false);
+    const [openPaymentHistory, setOpenPaymentHistory] = React.useState(false);
+    const [openLineItems, setOpenLineItems] = React.useState(false)
   
     return (
       <React.Fragment>
@@ -51,15 +72,15 @@ function createData(
             <IconButton
               aria-label="expand row"
               size="small"
-              onClick={() => setOpen(!open)}
+              onClick={() => setOpenPaymentHistory(!openPaymentHistory)}
             >
-              {open ? '^' : '+'}
+              {openPaymentHistory ? '-' : '+'}
             </IconButton>
           </TableCell>
           <TableCell component="th" scope="row" className='table-cell'>
             {row.account_id}
           </TableCell>
-          <TableCell component="th" scope="row" align='right' className='table-cell'>
+          <TableCell component="th" scope="row" className='table-cell'>
             {row.account_name}
           </TableCell>
           <TableCell className='table-cell'>{row.account_type}</TableCell>
@@ -68,31 +89,33 @@ function createData(
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse in={openPaymentHistory} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <Typography variant="h6" gutterBottom component="div">
-                  History
+                  Payout History
                 </Typography>
                 <Table size="small" aria-label="purchases">
                   <TableHead>
                     <TableRow>
                       <TableCell>Date</TableCell>
-                      <TableCell>Customer</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Event_ID</TableCell>
                       <TableCell>Amount</TableCell>
-                      <TableCell>Total price ($)</TableCell>
+                      <TableCell>Initiator</TableCell>
+                      <TableCell>Invoice_URL</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {row.history.map((historyRow) => (
-                      <TableRow key={historyRow.date}>
+                      <TableRow key={historyRow.date} className='history-row' onClick={() => setOpenLineItems(!openLineItems)}>
                         <TableCell component="th" scope="row">
                           {historyRow.date}
                         </TableCell>
-                        <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell>{historyRow.amount}</TableCell>
-                        <TableCell>
-                          {Math.round(historyRow.amount * row.total_ytd * 100) / 100}
-                        </TableCell>
+                        <TableCell>{historyRow.status}</TableCell>
+                        <TableCell>{historyRow.event_id}</TableCell>
+                        <TableCell>${historyRow.amount}</TableCell>
+                        <TableCell>{historyRow.initator}</TableCell>
+                        <TableCell>{historyRow.invoice_url}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -106,7 +129,7 @@ function createData(
   }
   
   const rows = [
-    createData(32, "Mykael Barnes", 'business', 100, 100)
+    createData('acct_1MgEqPE1KDoxGYPc', "Mykael Barnes", 'Business', 100, 100)
   ];
   
   export default function CollapsibleTable() {
@@ -114,17 +137,17 @@ function createData(
       <TableContainer className="table-container">
         <Table aria-label="collapsible table" className='table'>
           <TableHead className='table-head'>
-            <TableRow className='table-row'>
-              {/* <TableCell /> */}
-              <TableCell className='table-cell'>Account ID</TableCell>
-              <TableCell className='table-cell'>Account Name</TableCell>
-              <TableCell className='table-cell'>Type</TableCell>
-              <TableCell className='table-cell'>Total_Lifetime</TableCell>
-              <TableCell className='table-cell'>Total_YtD</TableCell>
+            <TableRow>
+              <TableCell />
+              <TableCell className='table-cell head-cell'>Account ID</TableCell>
+              <TableCell className='table-cell head-cell'>Account Name</TableCell>
+              <TableCell className='table-cell head-cell'>Type</TableCell>
+              <TableCell className='table-cell head-cell'>Total_Lifetime</TableCell>
+              <TableCell className='table-cell head-cell'>Total_YtD</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-              <Row key={rows[0].account_name} row={rows[0]} />
+          <TableBody className='table-body'>
+              <Row key={rows[0].account_name} row={rows[0]}/>
           </TableBody>
         </Table>
       </TableContainer>
